@@ -1,8 +1,12 @@
 var PDFDocument = require('pdfkit');
 var fs = require('fs');
- 
+
+const purple = "#884639";
+const fullWidth = 595.28;
 //Create a document 
-doc = new PDFDocument
+doc = new PDFDocument({
+   size: 'A4' // A4: [595.28, 841.89]
+})
  
 // Pipe its output somewhere, like to a file or HTTP response 
 // See below for browser usage 
@@ -13,23 +17,22 @@ doc.font('fonts/PraxisCom-Light.ttf')
    .fontSize(25)
    .text('Some text with an embedded font!', 100, 100)
  
-
-
-doc.image('images/dog.png', 0, 15, {width: 200})
+doc.image('images/dog.png', 0, 15, {width: 150})
    .text('Proportional to width', 0, 0)
-
 
 // Add another page 
 doc.addPage()
    .fontSize(25)
    .text('Here is some vector graphics...', 100, 100)
  
+doc.rect(0, 0, fullWidth, 100).fill(purple);
+
 // Draw a triangle 
 doc.save()
-   .moveTo(100, 150)
+   .moveTo(200, 200)
    .lineTo(100, 250)
    .lineTo(200, 250)
-   .fill("#FF3300")
+   .fill(purple)
  
 // Apply some transforms and render an SVG path with the 'even-odd' fill rule 
 doc.scale(0.6)
@@ -39,8 +42,8 @@ doc.scale(0.6)
    .restore()
  
 // Add some text with annotations 
-doc.addPage()
-   .fillColor("#884639")
+doc.save()
+   .fillColor(purple)
    .text('Here is a link!', 100, 100)
    // .underline(100, 100, 160, 27, color: "#0000FF")
    .link(100, 100, 160, 27, 'http://google.com/')
