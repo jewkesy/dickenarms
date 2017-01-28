@@ -12,101 +12,164 @@ const dogLogo = {
 
 const fFont = 'fonts/PraxisCom-Light.ttf';
 
-//Create a document 
-doc = new PDFDocument({
-   margin: 0,
-   size: 'A4' // A4: [595.28, 841.89]
-})
- 
-// Pipe its output somewhere, like to a file or HTTP response 
-// See below for browser usage 
-doc.pipe(fs.createWriteStream('pdf/output.pdf'));
- 
-// Embed a font, set the font size, and render some text 
+createDoc({
+   output: 'pdf/output.pdf',
+   soups: {
+      title: "SOUP",
+      subTitle: "",
+      menu: [{
+         title: "",
+         price: 0
+      }]},
+   starters: {
+      title: "STARTERS/SNACKS",
+      subTitle: "Served tapas style, try one or two for a snack or three or more the share",
+      menu: [{
+         title: "",
+         price: 0
+      }]},
+   mains: {
+      title: "MAINS",
+      subTitle: "",
+      menu: [{
+         title: "",
+         price: 0
+      }]},
+   grill: {
+      title: "THE GRILL",
+      subTitle: "All served with plum tomato, flat mushroom, Shropshire gold onion rings and chips",
+      menu: [{
+         title: "",
+         price: 0
+      }]},
+   sfv: {
+      title: "SALADS, FISH AND VEGETARIAN",
+      subTitle: "",
+      menu: [{
+         title: "",
+         price: 0
+      }]},
+   sides: {
+      title: "SIDES",
+      subTitle: "",
+      menu: [{
+         title: "",
+         price: 0
+      }]},
+   address: {
+      line1: "THE DICKIN ARMS,",
+      line2: "LOPPINGTON, SHREWSBURY, SY4 5SR",
+      tel: "+44 (0)1939 233471",
+      url: "WWW.THEDICKINARMS.COM"
+   }
+});
 
-header(doc, brown, 10);
+function createDoc(menu) {
 
-// var t = 25;   
-// doc.fontSize(12).text('THE', 0, t, {
-//   width: fullWidth,
-//   align: 'center'})
+   //Create a document 
+   doc = new PDFDocument({
+      font: fFont,
+      margins: {
+         top: 10,
+         left: 70,
+         right: 40,
+         bottom: 10
+      },
+      size: 'A4' // A4: [595.28, 841.89]
+   })
+    
+   // Pipe its output somewhere, like to a file or HTTP response 
+   doc.pipe(fs.createWriteStream(menu.output));
 
-// doc.moveTo((fullWidth/2)-80, t+20)
-//    .lineTo((fullWidth/2)+80, t+20)
-//    .lineWidth(1)
-//    .stroke(brown)
+   // HEADER
+   header(doc, brown, 10);
 
-// doc.fontSize(18).text('DICKEN ARMS', 0, t+26, {
-//   width: fullWidth,
-//   align: 'center'})
+   doc.image(dogLogo.path, (fullWidth/2)-(dogLogo.width/2), 83, {width: dogLogo.width})
 
-// doc.moveTo((fullWidth/2)-80, t+44)
-//    .lineTo((fullWidth/2)+80, t+44)
-//    .lineWidth(1)
-//    .stroke(brown)
+   var y = 160
 
-doc.image(dogLogo.path, (fullWidth/2)-(dogLogo.width/2), 83, {width: dogLogo.width})
+   doc.moveTo(0+38, y)
+      .lineTo(fullWidth-38, y)
+      .lineWidth(1.25)
+      .stroke(brown)
 
-doc.font(fFont)
-   .fontSize(20)
-   
-//  FOOTER
-footer(doc);
+   doc.fontSize(22).text('SOUP', 0, y+8, {
+     width: fullWidth,
+     align: 'center'})
 
-// Add another page 
-doc.addPage()
-doc.rect(0, 0, fullWidth, 80).fill(brown);
+   y = y + 30
+   doc.moveTo(0+40, y)
+      .lineTo(fullWidth-40, y)
+      .lineWidth(1.25)
+      .stroke(brown)
 
-doc.fillColor(white)
 
-header(doc, white, 10);
+   // MENU
 
 
 
-//  FOOTER
-footer(doc);
- 
-// Finalize PDF file 
-doc.end()
+      
+   // FOOTER
+   footer(doc, menu);
+
+
+////////////////////////////
+
+   doc.addPage()
+
+   // HEADER
+   doc.rect(0, 0, fullWidth, 80).fill(brown);
+   doc.fillColor(white);
+   header(doc, white, 10);
+
+   // MENU
+
+
+   // FOOTER
+   footer(doc, menu);
+    
+   // Finalize PDF file 
+   doc.end()
+}
 
 function header(doc, color, top) {
-   var t = top;
+   var t = 10;
    doc.fontSize(12).text('THE', 0, t, {
      width: fullWidth,
      align: 'center'})
 
-   doc.moveTo((fullWidth/2)-80, t+20)
-      .lineTo((fullWidth/2)+80, t+20)
-      .lineWidth(0.5)
+   doc.moveTo((fullWidth/2)-80, 30)
+      .lineTo((fullWidth/2)+80, 30)
+      .lineWidth(0.75)
       .stroke(color)
 
-   doc.fontSize(18).text('DICKEN ARMS', 0, t+23, {
+   doc.fontSize(18).text('DICKEN ARMS', 0, 36, {
      width: fullWidth,
      align: 'center'})
 
    doc.moveTo((fullWidth/2)-80, 57)
       .lineTo((fullWidth/2)+80, 57)
-      .lineWidth(0.5)
+      .lineWidth(0.75)
       .stroke(color)
 }
 
-function footer(doc) {
+function footer(doc, menu) {
    var t = 750
    doc.fillColor(black).fontSize(12)
 
-   doc.text('THE DICKIN ARMS', 0, t, {
+   doc.text(menu.address.line1, 0, t, {
       width: fullWidth,
       align: 'center'})
 
-   doc.text('LOPPINGTON, SHREWSBURY, SY4 5SR', 0, t+14, {
+   doc.text(menu.address.line2, 0, t+14, {
       width: fullWidth,
       align: 'center'})
 
-   doc.text('T: +44 (0)1939 233471', 0, t+28, {
+   doc.text(menu.address.tel, 0, t+28, {
       width: fullWidth,
       align: 'center'})
 
-   doc.text('WWW.THEDICKINARMS.COM', 0, t+52, {
+   doc.text(menu.address.url, 0, t+52, {
       width: fullWidth,
       align: 'center'
    })
