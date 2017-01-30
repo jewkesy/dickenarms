@@ -10,7 +10,7 @@ const dogLogo = {
    width: 70
 };
 
-const fFont = 'fonts/PraxisCom-Light.ttf';
+const fFont = 'fonts/tw-cen-mt.ttf'; // 'fonts/PraxisCom-Light.ttf';
 
 createDoc({
    output: 'pdf/output.pdf',
@@ -68,7 +68,6 @@ function createDoc(menu) {
 
    //Create a document 
    doc = new PDFDocument({
-      font: fFont,
       margins: {
          top: 10,
          left: 70,
@@ -80,11 +79,14 @@ function createDoc(menu) {
     
    // Pipe its output somewhere, like to a file or HTTP response 
    doc.pipe(fs.createWriteStream(menu.output));
-
+   doc.font(fFont);
    // HEADER
-   header(doc, brown, 10);
+   header(doc, brown);
 
    doc.image(dogLogo.path, (fullWidth/2)-(dogLogo.width/2), 83, {width: dogLogo.width})
+
+
+   // MENU
 
    var y = 160
 
@@ -93,7 +95,7 @@ function createDoc(menu) {
       .lineWidth(1.25)
       .stroke(brown)
 
-   doc.fontSize(22).text('SOUP', 0, y+8, {
+   doc.fontSize(22).fillColor(brown).text(menu.soups.title, 0, y+8, {
      width: fullWidth,
      align: 'center'})
 
@@ -103,8 +105,29 @@ function createDoc(menu) {
       .lineWidth(1.25)
       .stroke(brown)
 
+   y = y + 98
+   
+   doc.moveTo(0+38, y)
+      .lineTo(fullWidth-38, y)
+      .lineWidth(1.25)
+      .stroke(brown)
 
-   // MENU
+   doc.fontSize(22).fillColor(brown).text(menu.starters.title, 0, y+8, {
+     width: fullWidth,
+     align: 'center'})
+
+
+   y = y + 30
+
+   doc.fontSize(10).fillColor(brown).text(menu.starters.subTitle, 0, y+8, {
+     width: fullWidth,
+     align: 'center'})
+
+   y = y + 30
+   doc.moveTo(0+40, y)
+      .lineTo(fullWidth-40, y)
+      .lineWidth(1.25)
+      .stroke(brown)
 
 
 
@@ -120,7 +143,7 @@ function createDoc(menu) {
    // HEADER
    doc.rect(0, 0, fullWidth, 80).fill(brown);
    doc.fillColor(white);
-   header(doc, white, 10);
+   header(doc, white);
 
    // MENU
 
@@ -132,9 +155,9 @@ function createDoc(menu) {
    doc.end()
 }
 
-function header(doc, color, top) {
+function header(doc, color) {
    var t = 10;
-   doc.fontSize(12).text('THE', 0, t, {
+   doc.fontSize(14).text('THE', 0, t, {
      width: fullWidth,
      align: 'center'})
 
@@ -143,7 +166,8 @@ function header(doc, color, top) {
       .lineWidth(0.75)
       .stroke(color)
 
-   doc.fontSize(18).text('DICKEN ARMS', 0, 36, {
+   doc.fontSize(21).text('DICKIN ARMS', 0, 32, {
+     characterSpacing: 2,
      width: fullWidth,
      align: 'center'})
 
