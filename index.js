@@ -12,7 +12,7 @@ const dogLogo = {
 
 const headFontSize = 24;
 const subTitleFontSize = 12;
-
+const dots = ".................................................................................................................................................................."
 const fFont = 'fonts/tw-cen-mt.ttf'; // 'fonts/PraxisCom-Light.ttf';
 
 createDoc({
@@ -156,23 +156,29 @@ function createDoc(menu) {
 
    //Create a document
    doc = new PDFDocument({
+      autoFirstPage: true,
       margins: {
          top: 10,
-         left: 70,
-         right: 40,
+         left: 35,
+         right: 35,
          bottom: 10
       },
+      // margin: 72,
       size: 'A4' // A4: [595.28, 841.89]
    })
 
    // Pipe its output somewhere, like to a file or HTTP response
    doc.pipe(fs.createWriteStream(menu.output));
    doc.font(fFont);
+
+buildFullWidthMenu( menu.soups.menu, doc);
+doc.addPage()
+
+
    // HEADER
    header(doc, brown);
 
    doc.image(dogLogo.path, (fullWidth/2)-(dogLogo.width/2), 65, {width: dogLogo.width})
-
 
    // MENU
 
@@ -193,6 +199,10 @@ function createDoc(menu) {
       .lineWidth(1.25)
       .stroke(brown)
 
+  // SOUPS
+  buildFullWidthMenu( menu.soups.menu, doc);
+
+return  doc.end()
    y = y + 98
 
    doc.moveTo(0+38, y)
@@ -217,7 +227,13 @@ function createDoc(menu) {
       .lineWidth(1.25)
       .stroke(brown)
 
-
+  // STARTERS
+  doc.fillColor(brown);
+  for (var i = 0; i < menu.starters.menu.length; i++) {
+    doc.fontSize(14).text(dots, {width:fullWidth});
+    var x = menu.starters.menu[i];
+    doc.fontSize(14).text(x.title)
+  }
 
 
    // FOOTER
@@ -241,6 +257,38 @@ function createDoc(menu) {
 
    // Finalize PDF file
    doc.end()
+}
+
+function buildFullWidthMenu(section, doc) {
+  doc.fillColor(brown);
+  var dSize = doc.widthOfString(".");
+  for (var i = 0; i < section.length; i++) {
+    var x = section[i];
+    var price = formatPrice(x.price);
+    var tSize = doc.widthOfString(x.title);
+    var pSize = doc.widthOfString(price);
+
+    console.log(dSize, tSize, pSize);
+
+    var a = 0
+
+    var dotWidth = fullWidth - tSize - pSize;
+    console.log(dotWidth)
+    var dots = '';
+    while (dSize < dotWidth) {
+      dots += ".";
+      dSize += dSize;
+    }
+
+    var text = x.title + dots + price;
+    console.log(text)
+    // doc.fontSize(14).text(dots, {width:fullWidth});
+    doc.fontSize(14).text(x.title);
+  }
+}
+
+function formatPrice(decimal) {
+  return "£"+decimal.toString();
 }
 
 function header(doc, color) {
