@@ -10,6 +10,9 @@ const dogLogo = {
    width: 70
 };
 
+const headFontSize = 24;
+const subTitleFontSize = 12;
+
 const fFont = 'fonts/tw-cen-mt.ttf'; // 'fonts/PraxisCom-Light.ttf';
 
 createDoc({
@@ -18,43 +21,128 @@ createDoc({
       title: "SOUP",
       subTitle: "",
       menu: [{
-         title: "",
-         price: 0
+         title: "SOUP OF THE DAY, FRESH BREAD",
+         price: 4.5
+      },{
+         title: "SPICY CHICKEN & SWEETCORN CHOWDER",
+         price: 6.0
       }]},
    starters: {
       title: "STARTERS/SNACKS",
       subTitle: "Served tapas style, try one or two for a snack or three or more the share",
       menu: [{
-         title: "",
-         price: 0
+         title: "QUEEN GREEN OLIVES",
+         price: 3.0
+      },{
+         title: "LEMON & CORIANDER HOUMOUS, PITTA BREAD",
+         price: 3.0
+      },{
+         title: "Y FENNI CHEESE & SHROPSHIRE GOLD WELSH RAREBIT",
+         price: 3.0
+      },{
+         title: "OVEN DRIED PLUM TOMATO ARANCINI, SAFFRON MAYONNAISE",
+         price: 3.5
+      },{
+         title: "PAPRIKA DUSTED CALAMARI, AIOLI",
+         price: 3.5
+      },{
+         title: "PIRI-PIRI CHICKEN WINGS",
+         price: 4.0
+      },{
+         title: "THAI CRAB CAKES, ASIAN SLAW",
+         price: 4.0
+      },{
+         title: "BREADED HAGGIS BEIGNETS, APPLE & MUSTARD SEED SAUCE",
+         price: 4.5
+      },{
+         title: "MINI SCOTCH EGGS",
+         price: 5.0
+      },{
+         title: "MINI CHORIZO & GARLIC",
+         price: 5.0
+      },{
+         title: "BREAD & OILS/BUTTER",
+         price: 5.5
+      },{
+         title: "BAKED CAMEMBERT, TOAST & LOPPINGTON HALL QUINCE & CHILLI JAM",
+         price: 9.0
       }]},
    mains: {
       title: "MAINS",
       subTitle: "",
       menu: [{
-         title: "",
-         price: 0
+         title: "\"WREXHAM\" BATTERED HADDOCK & CHIPS",
+         subTitle: "Tartare Sauce, Mushy Peas",
+         price: 10.0
+      },{
+         title: "LOCAL PORK SAUSAGES",
+         subTitle: "Mustard Mashed Potatoes, Onion Gravy",
+         price: 10.0
+      },{
+         title: "PIE OF THE DAY",
+         subTitle: "Chunky Chips, Gravy",
+         price: 10.0
+      },{
+         title: "DUCK CASSUOLET",
+         subTitle: "French Stew of Confit Duck Leg, Toulouse Sausage, Pulses",
+         price: 14.5
       }]},
    grill: {
       title: "THE GRILL",
       subTitle: "All served with plum tomato, flat mushroom, Shropshire gold onion rings and chips",
       menu: [{
-         title: "",
-         price: 0
+         title: "10oz BACON CHOP",
+         note: "(ADD 2 FREE RANGE FRIED EGGS FOR £2.00)",
+         price: 12.0
+      },{
+         title: "8oz RUMP STEAK",
+         price: 12.5
+      },{
+         title: "8oz RIBEYE STEAK",
+         price: 16.5
+      },{
+         title: "12oz T-BONE STEAK",
+         price: 19.5
+      },{
+         title: "8oz FILLET STEAK",
+         price: 22.5
       }]},
    sfv: {
       title: "SALADS, FISH AND VEGETARIAN",
       subTitle: "",
       menu: [{
-         title: "",
-         price: 0
+         title: "CAESAR",
+         subTitle: "Romaine Lettuce hearts hearts, Ciabatta Croutes, Anchovies (optional) Local Smoked Bacon, Poached free range egg, Caesar Dressing",
+         note: "(ADD WARM SMOKED CHICKEN FOR £2.50)",
+         price: 10.5
+      },{
+         title: "GOATS CURD & BEETROOT",
+         subTitle: "Welsh goats curd, pickled raw and baked beetroot, candied and pickled walnuts, beetroot sprouts, Walnutoil & sherry vinaigrette",
+         price: 12.0
+      },{
+         title: "PORCINI MUSHROOM & TALEGGIO CHEESE RISOTTO",
+         subTitle: "Parmesan, Rocket",
+         price: 12.5
+      },{
+         title: "SEARED SEABREAM FILLETS",
+         subTitle: "Oven-dried plum tomatoes, queen olives, roast courgettes and rocket pesto",
+         price: 14.0
       }]},
    sides: {
       title: "SIDES",
       subTitle: "",
       menu: [{
-         title: "",
-         price: 0
+         title: "PEPPERCORN OR BLUE CHEESE SAUCE",
+         price: 2.0
+      },{
+         title: "DAILY VEGETABLES (PLEASE ASK)",
+         price: 3.0
+      },{
+         title: "CHIPS",
+         price: 3.0
+      },{
+         title: "ROCKET & PARMESAN SALAD",
+         price: 3.0
       }]},
    address: {
       line1: "THE DICKIN ARMS,",
@@ -66,7 +154,7 @@ createDoc({
 
 function createDoc(menu) {
 
-   //Create a document 
+   //Create a document
    doc = new PDFDocument({
       margins: {
          top: 10,
@@ -76,14 +164,14 @@ function createDoc(menu) {
       },
       size: 'A4' // A4: [595.28, 841.89]
    })
-    
-   // Pipe its output somewhere, like to a file or HTTP response 
+
+   // Pipe its output somewhere, like to a file or HTTP response
    doc.pipe(fs.createWriteStream(menu.output));
    doc.font(fFont);
    // HEADER
    header(doc, brown);
 
-   doc.image(dogLogo.path, (fullWidth/2)-(dogLogo.width/2), 83, {width: dogLogo.width})
+   doc.image(dogLogo.path, (fullWidth/2)-(dogLogo.width/2), 65, {width: dogLogo.width})
 
 
    // MENU
@@ -95,7 +183,7 @@ function createDoc(menu) {
       .lineWidth(1.25)
       .stroke(brown)
 
-   doc.fontSize(22).fillColor(brown).text(menu.soups.title, 0, y+8, {
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.soups.title, 0, y+2, {
      width: fullWidth,
      align: 'center'})
 
@@ -106,24 +194,24 @@ function createDoc(menu) {
       .stroke(brown)
 
    y = y + 98
-   
+
    doc.moveTo(0+38, y)
       .lineTo(fullWidth-38, y)
       .lineWidth(1.25)
       .stroke(brown)
 
-   doc.fontSize(22).fillColor(brown).text(menu.starters.title, 0, y+8, {
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.starters.title, 0, y+8, {
      width: fullWidth,
      align: 'center'})
 
 
-   y = y + 30
+   y = y + 33
 
-   doc.fontSize(10).fillColor(brown).text(menu.starters.subTitle, 0, y+8, {
+   doc.fontSize(subTitleFontSize).fillColor(black).text(menu.starters.subTitle, 0, y+8, {
      width: fullWidth,
      align: 'center'})
 
-   y = y + 30
+   y = y + 33
    doc.moveTo(0+40, y)
       .lineTo(fullWidth-40, y)
       .lineWidth(1.25)
@@ -131,7 +219,7 @@ function createDoc(menu) {
 
 
 
-      
+
    // FOOTER
    footer(doc, menu);
 
@@ -150,8 +238,8 @@ function createDoc(menu) {
 
    // FOOTER
    footer(doc, menu);
-    
-   // Finalize PDF file 
+
+   // Finalize PDF file
    doc.end()
 }
 
