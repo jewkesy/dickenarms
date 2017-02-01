@@ -256,7 +256,6 @@ doc.moveDown().moveDown()
 }
 
 function buildFullWidthMenu(section, doc) {
-  console.log(doc.page.width);
   doc.fillColor(black);
   doc.fontSize(14);
   var dSize = doc.widthOfString(".");
@@ -269,8 +268,6 @@ function buildFullWidthMenu(section, doc) {
     var dotWidth = (fullWidth-75) - tSize - pSize;
 
     var dots = '';
-    x.title = x.title + ' '
-
     var curDotSize = 0;
 
     //how many dots can fit into
@@ -280,7 +277,7 @@ function buildFullWidthMenu(section, doc) {
       dots += '.';
     }
 
-    var retVal = x.title  + dots + ' ' + price;
+    var retVal = x.title + ' ' + dots + ' ' + price;
 
     doc.fontSize(14).text(retVal, 35, doc.y, {lineBreak: false, align: 'justify'});
     doc.moveDown(1.85)
