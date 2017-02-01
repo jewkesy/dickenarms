@@ -13,7 +13,6 @@ const dogLogo = {
 
 const headFontSize = 24;
 const subTitleFontSize = 12;
-const dots = ".................................................................................................................................................................."
 const fFont = 'fonts/tw-cen-mt.ttf'; // 'fonts/PraxisCom-Light.ttf';
 
 createDoc({
@@ -172,10 +171,6 @@ function createDoc(menu) {
    doc.pipe(fs.createWriteStream(menu.output));
    doc.font(fFont);
 
-// buildFullWidthMenu( menu.soups.menu, doc);
-// doc.addPage()
-//
-// return  doc.end()
    // HEADER
    header(doc, brown);
 
@@ -185,8 +180,8 @@ function createDoc(menu) {
 
    var y = 160
 
-   doc.moveTo(0+38, y)
-      .lineTo(fullWidth-38, y)
+   doc.moveTo(doc.options.margins.left, y)
+      .lineTo(fullWidth-doc.options.margins.left, y)
       .lineWidth(1.25)
       .stroke(brown)
 
@@ -195,19 +190,21 @@ function createDoc(menu) {
      align: 'center'})
 
    y = y + 30
-   doc.moveTo(0+40, y)
-      .lineTo(fullWidth-40, y)
+   doc.moveTo(doc.options.margins.left, y)
+      .lineTo(fullWidth-doc.options.margins.left, y)
       .lineWidth(1.25)
       .stroke(brown)
 
+   doc.moveDown()
+   doc.moveTo(0, 0)
   // SOUPS
-  buildFullWidthMenu( menu.soups.menu, doc);
+  buildFullWidthMenu(menu.soups.menu, doc);
 
 
    y = y + 98
 
-   doc.moveTo(0+38, y)
-      .lineTo(fullWidth-38, y)
+   doc.moveTo(doc.options.margins.left, y)
+      .lineTo(fullWidth-doc.options.margins.left, y)
       .lineWidth(1.25)
       .stroke(brown)
 
@@ -223,18 +220,16 @@ function createDoc(menu) {
      align: 'center'})
 
    y = y + 33
-   doc.moveTo(0+40, y)
-      .lineTo(fullWidth-40, y)
+   doc.moveTo(doc.options.margins.left, y)
+      .lineTo(fullWidth-doc.options.margins.left, y)
       .lineWidth(1.25)
       .stroke(brown)
 
-  // STARTERS
-  doc.fillColor(brown);
-  for (var i = 0; i < menu.starters.menu.length; i++) {
-    doc.fontSize(14).text(dots, {width:fullWidth});
-    var x = menu.starters.menu[i];
-    doc.fontSize(14).text(x.title)
-  }
+doc.moveDown().moveDown()
+    // STARTERS
+    doc.fillColor(brown);
+
+    buildFullWidthMenu(menu.starters.menu, doc);
 
 
    // FOOTER
@@ -262,7 +257,7 @@ function createDoc(menu) {
 
 function buildFullWidthMenu(section, doc) {
   console.log(doc.page.width);
-  doc.fillColor(brown);
+  doc.fillColor(black);
   doc.fontSize(14);
   var dSize = doc.widthOfString(".");
   for (var i = 0; i < section.length; i++) {
@@ -271,27 +266,24 @@ function buildFullWidthMenu(section, doc) {
     var tSize = doc.widthOfString(x.title);
     var pSize = doc.widthOfString(price);
 
-    console.log(dSize, tSize, pSize);
-
     var dotWidth = (fullWidth-75) - tSize - pSize;
 
-    // console.log(dotWidth)
     var dots = '';
+    x.title = x.title + ' '
+
     var curDotSize = 0;
 
     //how many dots can fit into
-    var dotsNeeded = Math.ceil(dotWidth/dSize);
-    console.log(dotsNeeded)
+    var dotsNeeded = (dotWidth.toFixed(2)/dSize.toFixed(2)).toFixed(0);
 
-    for (var a = 0; a <= dotsNeeded; a++) {
+    for (var a = 0; a < dotsNeeded; a++) {
       dots += '.';
     }
 
-    var retVal = x.title + dots + price;
-    console.log(retVal)
+    var retVal = x.title  + dots + ' ' + price;
 
-    doc.fontSize(14).text(retVal, {lineBreak: true});
-    doc.moveDown()
+    doc.fontSize(14).text(retVal, 35, doc.y, {lineBreak: false, align: 'justify'});
+    doc.moveDown(1.85)
   }
 }
 
