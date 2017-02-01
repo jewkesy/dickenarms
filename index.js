@@ -1,5 +1,6 @@
 var PDFDocument = require('pdfkit');
 var fs = require('fs');
+var console = require('tracer').colorConsole();
 
 const brown = "#884639";
 const white = "#fff";
@@ -174,7 +175,7 @@ function createDoc(menu) {
 buildFullWidthMenu( menu.soups.menu, doc);
 doc.addPage()
 
-
+return  doc.end()
    // HEADER
    header(doc, brown);
 
@@ -202,7 +203,7 @@ doc.addPage()
   // SOUPS
   buildFullWidthMenu( menu.soups.menu, doc);
 
-return  doc.end()
+
    y = y + 98
 
    doc.moveTo(0+38, y)
@@ -260,7 +261,9 @@ return  doc.end()
 }
 
 function buildFullWidthMenu(section, doc) {
+  console.log(doc.page.width);
   doc.fillColor(brown);
+  doc.fontSize(14);
   var dSize = doc.widthOfString(".");
   for (var i = 0; i < section.length; i++) {
     var x = section[i];
@@ -270,25 +273,37 @@ function buildFullWidthMenu(section, doc) {
 
     console.log(dSize, tSize, pSize);
 
-    var a = 0
+
 
     var dotWidth = fullWidth - tSize - pSize;
-    console.log(dotWidth)
-    var dots = '';
-    while (dSize < dotWidth) {
-      dots += ".";
-      dSize += dSize;
-    }
 
-    var text = x.title + dots + price;
-    console.log(text)
+    // console.log(dotWidth)
+    var dots = '';
+    var curDotSize = 0;
+
+    //how many dots can fit into
+    var dotsNeeded = Math.ceil(dotWidth/dSize);
+    console.log(dotsNeeded)
+
+    for (var a = 0; a < dotsNeeded; a++) {
+      dots += '.';
+    }
+    // while (dSize < dotWidth) {
+    //   dots += ".";
+    //   dSize += dSize;
+    // }
+    //
+    // var text = x.title + dots + price;
+    // console.log(dots)
+    var retVal = x.title + dots + price;
+    console.log(retVal)
     // doc.fontSize(14).text(dots, {width:fullWidth});
-    doc.fontSize(14).text(x.title);
+    doc.fontSize(14).text(retVal);
   }
 }
 
 function formatPrice(decimal) {
-  return "£"+decimal.toString();
+  return "£"+decimal.toFixed(2).toString();
 }
 
 function header(doc, color) {
