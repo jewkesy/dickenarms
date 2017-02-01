@@ -179,39 +179,26 @@ function createDoc(menu) {
    // MENU
 
    var y = 160
-
-   doc.moveTo(doc.options.margins.left, y)
-      .lineTo(fullWidth-doc.options.margins.left, y)
-      .lineWidth(1.25)
-      .stroke(brown)
+   buildFullWidthLine(y);
 
    doc.fontSize(headFontSize).fillColor(brown).text(menu.soups.title, 0, y+2, {
      width: fullWidth,
      align: 'center'})
 
    y = y + 30
-   doc.moveTo(doc.options.margins.left, y)
-      .lineTo(fullWidth-doc.options.margins.left, y)
-      .lineWidth(1.25)
-      .stroke(brown)
+   buildFullWidthLine(y);
 
    doc.moveDown()
-   doc.moveTo(0, 0)
+  doc.moveTo(0, 0)
   // SOUPS
   buildFullWidthMenu(menu.soups.menu, doc);
 
-
    y = y + 98
-
-   doc.moveTo(doc.options.margins.left, y)
-      .lineTo(fullWidth-doc.options.margins.left, y)
-      .lineWidth(1.25)
-      .stroke(brown)
+   buildFullWidthLine(y);
 
    doc.fontSize(headFontSize).fillColor(brown).text(menu.starters.title, 0, y+8, {
      width: fullWidth,
      align: 'center'})
-
 
    y = y + 33
 
@@ -220,17 +207,14 @@ function createDoc(menu) {
      align: 'center'})
 
    y = y + 33
-   doc.moveTo(doc.options.margins.left, y)
-      .lineTo(fullWidth-doc.options.margins.left, y)
-      .lineWidth(1.25)
-      .stroke(brown)
+   buildFullWidthLine(y);
 
-doc.moveDown().moveDown()
+
+    doc.moveDown().moveDown()
     // STARTERS
     doc.fillColor(brown);
 
     buildFullWidthMenu(menu.starters.menu, doc);
-
 
    // FOOTER
    footer(doc, menu);
@@ -239,14 +223,26 @@ doc.moveDown().moveDown()
 ////////////////////////////
 
    doc.addPage()
-
+   var y = 0;
    // HEADER
    doc.rect(0, 0, fullWidth, 80).fill(brown);
    doc.fillColor(white);
    header(doc, white);
 
-   // MENU
+   // MAINS
 
+   // GRILL
+
+   // SALADS
+
+   // SIDES
+   y = 640
+   buildFullWidthLine(y);
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.sides.title, 0, y+2, {
+     width: fullWidth,
+     align: 'center'})
+   y = y + 33
+   buildFullWidthLine(y);
 
    // FOOTER
    footer(doc, menu);
@@ -282,6 +278,13 @@ function buildFullWidthMenu(section, doc) {
     doc.fontSize(14).text(retVal, 35, doc.y, {lineBreak: false, align: 'justify'});
     doc.moveDown(1.85)
   }
+}
+
+function buildFullWidthLine(y) {
+  doc.moveTo(doc.options.margins.left, y)
+     .lineTo(fullWidth-doc.options.margins.left, y)
+     .lineWidth(1.25)
+     .stroke(brown)
 }
 
 function formatPrice(decimal) {
