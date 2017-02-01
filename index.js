@@ -172,10 +172,10 @@ function createDoc(menu) {
    doc.pipe(fs.createWriteStream(menu.output));
    doc.font(fFont);
 
-buildFullWidthMenu( menu.soups.menu, doc);
-doc.addPage()
-
-return  doc.end()
+// buildFullWidthMenu( menu.soups.menu, doc);
+// doc.addPage()
+//
+// return  doc.end()
    // HEADER
    header(doc, brown);
 
@@ -273,9 +273,7 @@ function buildFullWidthMenu(section, doc) {
 
     console.log(dSize, tSize, pSize);
 
-
-
-    var dotWidth = fullWidth - tSize - pSize;
+    var dotWidth = (fullWidth-75) - tSize - pSize;
 
     // console.log(dotWidth)
     var dots = '';
@@ -285,20 +283,15 @@ function buildFullWidthMenu(section, doc) {
     var dotsNeeded = Math.ceil(dotWidth/dSize);
     console.log(dotsNeeded)
 
-    for (var a = 0; a < dotsNeeded; a++) {
+    for (var a = 0; a <= dotsNeeded; a++) {
       dots += '.';
     }
-    // while (dSize < dotWidth) {
-    //   dots += ".";
-    //   dSize += dSize;
-    // }
-    //
-    // var text = x.title + dots + price;
-    // console.log(dots)
+
     var retVal = x.title + dots + price;
     console.log(retVal)
-    // doc.fontSize(14).text(dots, {width:fullWidth});
-    doc.fontSize(14).text(retVal);
+
+    doc.fontSize(14).text(retVal, {lineBreak: true});
+    doc.moveDown()
   }
 }
 
