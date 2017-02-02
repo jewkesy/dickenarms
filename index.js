@@ -15,6 +15,8 @@ const headFontSize = 24;
 const subTitleFontSize = 12;
 const fFont = 'fonts/tw-cen-mt.ttf'; // 'fonts/PraxisCom-Light.ttf';
 
+var y = 0;  //tracking the Y position
+
 createDoc({
    output: 'pdf/output.pdf',
    soups: {
@@ -178,10 +180,10 @@ function createDoc(menu) {
 
    // MENU
 
-   var y = 160
+   y = 160
    buildFullWidthLine(y);
-
-   doc.fontSize(headFontSize).fillColor(brown).text(menu.soups.title, 0, y+2, {
+   y = y + 2
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.soups.title, 0, y, {
      width: fullWidth,
      align: 'center'})
 
@@ -230,18 +232,48 @@ function createDoc(menu) {
    header(doc, white);
 
    // MAINS
+   y = 96
+   buildHalfWidthLine(y, true);
+   y = y + 2
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.mains.title, 0, y, {
+     width: fullWidth/2,
+     align: 'center'})
+
+   y = y + 30
+   buildHalfWidthLine(y, true);
 
    // GRILL
+   y = 96
+   buildHalfWidthLine(y, false);
+   y = y + 2
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.grill.title, (fullWidth/2), y, {
+     width: fullWidth/2,
+     align: 'center'})
+   y = y + 30
+   buildHalfWidthLine(y, false);
 
-   // SALADS
+   // SALADS, FISH & VEGETARIAN
+   y = 360
+   buildFullWidthLine(y);
+   y = y + 2
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.sfv.title, 0, y, {
+     width: fullWidth,
+     align: 'center'})
+
+   y = y + 30
+   buildFullWidthLine(y);
+   doc.moveDown()
+   doc.fillColor(brown);
+   buildFullWidthMenu(menu.sfv.menu, doc);
 
    // SIDES
    y = 640
    buildFullWidthLine(y);
-   doc.fontSize(headFontSize).fillColor(brown).text(menu.sides.title, 0, y+2, {
+   y = y + 2
+   doc.fontSize(headFontSize).fillColor(brown).text(menu.sides.title, 0, y, {
      width: fullWidth,
      align: 'center'})
-   y = y + 33
+   y = y + 30
    buildFullWidthLine(y);
    doc.moveDown()
 
@@ -330,6 +362,17 @@ function buildFullWidthLine(y) {
      .lineWidth(1.25)
      .stroke(brown)
   // console.log(fullWidth-doc.options.margins.left-doc.options.margins.left)
+}
+
+function buildHalfWidthLine(y, leftAligned) {
+  if (leftAligned)
+    doc.moveTo(doc.options.margins.left, y)
+  else
+    doc.moveTo(doc.options.margins.left, y)
+
+     doc.lineTo(fullWidth-doc.options.margins.left, y)
+       .lineWidth(1.25)
+       .stroke(brown)
 }
 
 function formatPrice(decimal) {
