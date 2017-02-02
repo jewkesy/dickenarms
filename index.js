@@ -172,7 +172,7 @@ function createDoc(menu) {
    doc.font(fFont);
 
    // HEADER
-   header(doc, brown);
+   header(doc, black);
 
    doc.image(dogLogo.path, (fullWidth/2)-(dogLogo.width/2), 65, {width: dogLogo.width})
 
@@ -243,12 +243,56 @@ function createDoc(menu) {
      align: 'center'})
    y = y + 33
    buildFullWidthLine(y);
+   doc.moveDown()
+
+   buildHalfWidthMenu(menu.sides.menu, doc);
 
    // FOOTER
    footer(doc, menu);
 
    // Finalize PDF file
    doc.end()
+   console.log("done")
+}
+
+function buildHalfWidthMenu(section, doc) {
+  doc.fillColor(black);
+  doc.fontSize(14);
+
+  // fullWidth-doc.options.margins.left-doc.options.margins.left
+
+  // var halfWidth = ((fullWidth-90)/2);
+  var halfWidth = ((fullWidth-doc.options.margins.left-doc.options.margins.left)/2)-10;
+  var dSize = doc.widthOfString(".");
+  for (var i = 0; i < section.length; i++) {
+    var x = section[i];
+    var price = formatPrice(x.price);
+    var tSize = doc.widthOfString(x.title);
+    var pSize = doc.widthOfString(price);
+
+    var dotWidth = halfWidth - tSize - pSize;
+
+    var dots = '';
+    var curDotSize = 0;
+
+    //how many dots can fit into
+    var dotsNeeded = (dotWidth.toFixed(2)/dSize.toFixed(2)).toFixed(0);
+
+    for (var a = 0; a < dotsNeeded; a++) {
+      dots += '.';
+    }
+
+    var retVal = x.title + ' ' + dots + ' ' + price;
+
+    if (isOdd(i)) {
+      doc.fontSize(14).text(retVal, halfWidth+doc.options.margins.left+15, doc.y, {lineBreak: false, align: 'justify'});
+      doc.moveDown(1.85)
+    }
+    else {
+      doc.fontSize(14).text(retVal, 35, doc.y, {lineBreak: false, align: 'justify'});
+    }
+
+  }
 }
 
 function buildFullWidthMenu(section, doc) {
@@ -285,6 +329,7 @@ function buildFullWidthLine(y) {
      .lineTo(fullWidth-doc.options.margins.left, y)
      .lineWidth(1.25)
      .stroke(brown)
+  // console.log(fullWidth-doc.options.margins.left-doc.options.margins.left)
 }
 
 function formatPrice(decimal) {
@@ -334,3 +379,5 @@ function footer(doc, menu) {
       align: 'center'
    })
 }
+
+function isOdd(num) { return num % 2;}
