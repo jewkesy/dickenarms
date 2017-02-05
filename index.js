@@ -1,8 +1,9 @@
+"use string";
 var PDFDocument = require('pdfkit');
 var fs = require('fs');
 var console = require('tracer').colorConsole();
 
-const brown = "#884639";
+const brown = "#904739";
 const white = "#fff";
 const black = "#000";
 const fullWidth = 595.28;
@@ -13,7 +14,7 @@ const dogLogo = {
 
 const headFontSize = 24;
 const subTitleFontSize = 12;
-const fFont = 'fonts/tw-cen-mt.ttf'; // 'fonts/PraxisCom-Light.ttf';
+const fFont = 'fonts/tw-cen-mt.ttf';
 
 var y = 0;  //tracking the Y position
 
@@ -165,11 +166,10 @@ function createDoc(menu) {
          right: 35,
          bottom: 10
       },
-      // margin: 72,
       size: 'A4' // A4: [595.28, 841.89]
    })
 
-   // Pipe its output somewhere, like to a file or HTTP response
+   // Pipe to a file
    doc.pipe(fs.createWriteStream(menu.output));
    doc.font(fFont);
 
@@ -191,9 +191,9 @@ function createDoc(menu) {
    buildFullWidthLine(y);
 
    doc.moveDown()
-  doc.moveTo(0, 0)
-  // SOUPS
-  buildFullWidthMenu(menu.soups.menu, doc);
+   doc.moveTo(0, 0)
+   // SOUPS
+   buildFullWidthMenu(menu.soups.menu, doc);
 
    y = y + 98
    buildFullWidthLine(y);
@@ -211,16 +211,14 @@ function createDoc(menu) {
    y = y + 33
    buildFullWidthLine(y);
 
+   doc.moveDown().moveDown()
+   // STARTERS
+   doc.fillColor(brown);
 
-    doc.moveDown().moveDown()
-    // STARTERS
-    doc.fillColor(brown);
-
-    buildFullWidthMenu(menu.starters.menu, doc);
+   buildFullWidthMenu(menu.starters.menu, doc);
 
    // FOOTER
    footer(doc, menu);
-
 
 ////////////////////////////
 
@@ -241,6 +239,8 @@ function createDoc(menu) {
 
    y = y + 30
    buildHalfWidthLine(y, true);
+   doc.moveDown()
+   buildHalfWidthMenu(menu.mains.menu, doc, doc.options.margins.left);
 
    // GRILL
    y = 96
@@ -251,6 +251,8 @@ function createDoc(menu) {
      align: 'center'})
    y = y + 30
    buildHalfWidthLine(y, false);
+   doc.moveDown()
+   buildHalfWidthMenu(menu.grill.menu, doc, (fullWidth/2)+5);
 
    // SALADS, FISH & VEGETARIAN
    y = 360
@@ -263,7 +265,6 @@ function createDoc(menu) {
    y = y + 30
    buildFullWidthLine(y);
    doc.moveDown()
-   doc.fillColor(brown);
    buildFullWidthMenu(menu.sfv.menu, doc);
 
    // SIDES
@@ -277,7 +278,7 @@ function createDoc(menu) {
    buildFullWidthLine(y);
    doc.moveDown()
 
-   buildHalfWidthMenu(menu.sides.menu, doc);
+   buildDistributedWidthMenu(menu.sides.menu, doc);
 
    // FOOTER
    footer(doc, menu);
@@ -287,11 +288,9 @@ function createDoc(menu) {
    console.log("done")
 }
 
-function buildHalfWidthMenu(section, doc) {
+function buildDistributedWidthMenu(section, doc) {
   doc.fillColor(black);
   doc.fontSize(14);
-
-  // fullWidth-doc.options.margins.left-doc.options.margins.left
 
   // var halfWidth = ((fullWidth-90)/2);
   var halfWidth = ((fullWidth-doc.options.margins.left-doc.options.margins.left)/2)-10;
@@ -325,6 +324,90 @@ function buildHalfWidthMenu(section, doc) {
     }
 
   }
+}
+
+function buildHalfWidthMenu(section, doc, xPos) {
+  // console.log(xPos)
+  doc.fillColor(black);
+  doc.fontSize(14);
+
+  // var halfWidth = ((fullWidth-90)/2);
+  var halfWidth = ((fullWidth-doc.options.margins.left-doc.options.margins.left)/2)-10;
+  var dSize = doc.widthOfString(".");
+  for (var i = 0; i < section.length; i++) {
+    var x = section[i];
+    var price = formatPrice(x.price);
+    var tSize = doc.widthOfString(x.title);
+    var pSize = doc.widthOfString(price);
+
+    var dotWidth = halfWidth - tSize - pSize;
+
+    var dots = '';
+    var curDotSize = 0;
+
+    //how many dots can fit into
+    var dotsNeeded = (dotWidth.toFixed(2)/dSize.toFixed(2)).toFixed(0);
+
+    for (var a = 0; a < dotsNeeded; a++) {
+      dots += '.';
+    }
+
+    // console.log(x)
+    var retVal = "";
+
+    if (typeof x.subTitle == 'undefined' && typeof x.note == 'undefined') {
+      retVal = x.title + ' ' + dots + ' ' + price;
+      doc.fontSize(14).text(retVal, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
+      doc.moveDown(1.85)
+    } else {
+      // console.log("here")
+      if (typeof x.subTitle == 'undefined' && typeof x.note != 'undefined') {
+        // console.log("here1")
+
+        doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
+
+        // doc.moveDown(1.85)
+      } else {
+        // console.log("here2")
+        doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
+
+        doc.fontSize(12)
+        var subW = doc.widthOfString(x.subTitle);
+        var yLine = doc.y
+        doc.text(x.subTitle, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
+
+        doc.moveTo(xPos, yLine)
+        doc.fontSize(14)
+        // doc.fontSize(14)
+        var dotWidth = halfWidth - subW - pSize;
+        var dotsNeeded = (dotWidth.toFixed(2)/dSize.toFixed(2)).toFixed(0);
+
+        for (var a = 0; a < dotsNeeded; a++) {
+          dots += '.';
+        }
+
+        retVal = dots + ' ' + price;
+        console.log(retVal)
+        doc.text(retVal)
+        // doc.text(retVal, doc.options.margins.left, yLine, {width: halfWidth-subW, lineBreak: false, align: 'justify'});
+
+        // doc.moveDown(1.5)
+      }
+    }
+  }
+}
+
+function buildHalfWidthLine(y, leftAligned) {
+  if (leftAligned)
+    doc.moveTo(doc.options.margins.left, y)
+      .lineTo((fullWidth/2)-5, y)
+  else
+    doc.moveTo((fullWidth/2)+5, y)
+      .lineTo(fullWidth-doc.options.margins.left, y)
+
+     doc
+       .lineWidth(1.25)
+       .stroke(brown)
 }
 
 function buildFullWidthMenu(section, doc) {
@@ -361,18 +444,6 @@ function buildFullWidthLine(y) {
      .lineTo(fullWidth-doc.options.margins.left, y)
      .lineWidth(1.25)
      .stroke(brown)
-  // console.log(fullWidth-doc.options.margins.left-doc.options.margins.left)
-}
-
-function buildHalfWidthLine(y, leftAligned) {
-  if (leftAligned)
-    doc.moveTo(doc.options.margins.left, y)
-  else
-    doc.moveTo(doc.options.margins.left, y)
-
-     doc.lineTo(fullWidth-doc.options.margins.left, y)
-       .lineWidth(1.25)
-       .stroke(brown)
 }
 
 function formatPrice(decimal) {
