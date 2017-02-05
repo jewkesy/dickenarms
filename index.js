@@ -380,8 +380,8 @@ function buildHalfWidthMenu(section, doc, xPos) {
         doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false} )
 
         doc
-          .fontSize(12).text(x.subTitle, xPos, doc.y, {width: halfWidth, lineBreak: false, continued: true})
-          .fontSize(14).text('...' + price, xPos, doc.y, {width: halfWidth, lineBreak: false, continued: false});
+          .fontSize(12).text(x.subTitle, xPos, doc.y, {width: halfWidth, lineBreak: false, continued: true, align: 'left'})
+          .fontSize(14).text(price, xPos, doc.y, {width: halfWidth, lineBreak: false, continued: false, align: 'right'});
 
 
         // doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
@@ -405,7 +405,7 @@ function buildHalfWidthMenu(section, doc, xPos) {
         // doc.text(retVal, subW+doc.options.margins.left)
 
       }
-      doc.moveDown(1)
+      doc.moveDown(0.75)
     }
   }
 }
