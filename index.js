@@ -360,39 +360,52 @@ function buildHalfWidthMenu(section, doc, xPos) {
       doc.fontSize(14).text(retVal, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
       doc.moveDown(1.85)
     } else {
-      // console.log("here")
       if (typeof x.subTitle == 'undefined' && typeof x.note != 'undefined') {
         // console.log("here1")
-
         doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
-
         // doc.moveDown(1.85)
       } else {
-        // console.log("here2")
-        doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
 
-        doc.fontSize(12)
-        var subW = doc.widthOfString(x.subTitle);
-        var yLine = doc.y
-        doc.text(x.subTitle, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
+    //  doc
+    //      .font("Helvetica").fontSize(70).text('A', {continued: true})
+    //      .font("Helvetica-Bold").fontSize(60).text('A', {continued: true})
+    //      .font("Times-Roman").fontSize(40).text('A', {continued: true})
+    //      .font("Times-Italic").fontSize(50).text('A', {continued: true})
+    //      .font("Courier").fontSize(60).text('A', {continued: true})
 
-        doc.moveTo(xPos, yLine)
-        doc.fontSize(14)
+
+
+        // var retVal = x.title + '\n' + x.subTitle + '...' + price
+        //
+        doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false} )
+
+        doc
+          .fontSize(12).text(x.subTitle, xPos, doc.y, {width: halfWidth, lineBreak: false, continued: true})
+          .fontSize(14).text('...' + price, xPos, doc.y, {width: halfWidth, lineBreak: false, continued: false});
+
+
+        // doc.fontSize(14).text(x.title, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
+        //
+        // doc.fontSize(12)
+        // var subW = doc.widthOfString(x.subTitle);
+        // var yLine = doc.y
+        // doc.text(x.subTitle, xPos, doc.y, {width: halfWidth, lineBreak: false, align: 'justify'});
+        //
+        // doc.moveUp()
         // doc.fontSize(14)
-        var dotWidth = halfWidth - subW - pSize;
-        var dotsNeeded = (dotWidth.toFixed(2)/dSize.toFixed(2)).toFixed(0);
+        // var dotWidth = halfWidth - subW - pSize;
+        // var dotsNeeded = (dotWidth.toFixed(2)/dSize.toFixed(2)).toFixed(0);
+        //
+        // for (var a = 0; a < dotsNeeded; a++) {
+        //   dots += '.';
+        // }
+        //
+        // retVal = dots + ' ' + price;
+        // console.log(retVal)
+        // doc.text(retVal, subW+doc.options.margins.left)
 
-        for (var a = 0; a < dotsNeeded; a++) {
-          dots += '.';
-        }
-
-        retVal = dots + ' ' + price;
-        console.log(retVal)
-        doc.text(retVal)
-        // doc.text(retVal, doc.options.margins.left, yLine, {width: halfWidth-subW, lineBreak: false, align: 'justify'});
-
-        // doc.moveDown(1.5)
       }
+      doc.moveDown(1)
     }
   }
 }
